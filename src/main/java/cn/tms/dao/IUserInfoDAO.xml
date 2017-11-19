@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.tms.dao.IUserInfoDAO">
+
+
+
+
+
+
+
+    <!--1.登录-->
+    <select id="isLogin" parameterType="UserInfo" resultType="UserInfo">
+        select userid,username from sys_userinfo where username=#{username} and userpwd=#{userpwd}
+    </select>
+
+
+    <!--2.拿到所有的管理员-->
+    <select id="getAllUserInfo" parameterType="java.lang.Integer" resultType="UserInfo">
+        select * from sys_userinfo where userid not in (select userid from sys_userinfo where userid =2)
+    </select>
+
+    <!--3.根据用户id拿到用户角色-->
+    <select id="getRoleByUserId" resultType="Role">
+        select * from sys_role where sys_role.id in (select roleid from sys_user_role where sys_user_role.userId=#{userid})
+    </select>
+
+    <!--4,gen据用户id拿到用户信息-->
+    <select id="getUserInfoById" resultType="UserInfo">
+        select * from sys_userinfo where userid=#{userid}
+    </select>
+
+    <!--5,验证用户给管理员添加的角色是否存在-->
+    <select id="checkUserRoleIsExist" resultType="java.lang.Integer">
+        select count(*) from sys_user_role where userId= #{0} and roleId = #{1}
+    </select>
+
+    <!--6.获取所有的管理员 基于分页-->
+    <select id="findAllUserInfo" resultType="UserInfo">
+        select * from sys_userinfo where userid not in (select userid from sys_userinfo where userid =#{userid}) limit #{currentpage},#{pagesize}
+    </select>
+
+    <!--7.获取分页的总页数-->
+    <select id="getUserInfoCountByPage" resultType="java.lang.Integer">
+        select count(*) from sys_userinfo  where userid not in (select userid from sys_userinfo where userid =#{userid})
+    </select>
+
+</mapper>

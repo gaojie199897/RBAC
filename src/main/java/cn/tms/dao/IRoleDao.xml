@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.tms.dao.IRoleDao">
+    <!--1.登录-->
+    <select id="getAllRoles" resultType="Role">
+          select * from sys_role
+    </select>
+    
+    
+    <insert id="AddRoleForUser">
+        insert into sys_user_role (userid,roleid)VALUES (#{0},#{1})
+    </insert>
+    
+    <delete id="DeleRoleForUser">
+        delete from  sys_user_role where userid=#{0} and roleid=#{1}
+    </delete>
+
+    <select id="findRoleById" resultType="Role">
+        select * from sys_role where id=#{id}
+    </select>
+
+</mapper>

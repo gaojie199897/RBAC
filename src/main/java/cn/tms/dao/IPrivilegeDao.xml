@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.tms.dao.IPrivilegeDao">
+    <!--1.登录-->
+    <select id="getAllPrivilegesByEmpId" parameterType="java.lang.Integer" resultType="Privilege">
+       select * from sys_privilege
+        where id in
+        (
+            select privalegeId
+            from sys_role_privilege
+            where roleid in
+            (
+                 select roleid from sys_user_role
+                 where userid=#{id}
+            )
+          )
+    </select>
+
+
+    <!--2.拿到所有的权限-->
+    <select id="getAllPriv" resultType="Privilege">
+        select * from sys_privilege
+    </select>
+
+
+    <!--3.根据角色 id删除角色所有的权限-->
+    <delete id="delePrivForTree">
+        delete from sys_role_privilege where roleId =#{roleid}
+    </delete>
+    
+
+
+    <!--3,根据角色id拿到 角色的权限-->
+    <select id="getAllRrivByRoleId" parameterType="java.lang.Integer" resultType="Privilege">
+        select * from sys_privilege where id in (select privalegeId from sys_role_privilege where roleid=#{roleid})
+    </select>
+
+    <!--4,检验添加权限-->
+    <select id="checkPrivIsExist"  resultType="java.lang.Integer">
+        select count(*) from sys_role_privilege where roleId= #{0} and privalegeId = #{1}
+    </select>
+
+    <!--5,添加权限-->
+    <insert id="AddPrivForRole">
+        insert into sys_role_privilege (roleId,privalegeId) VALUES (#{0},#{1})
+    </insert>
+
+    <!--6.删除权限-->
+    <delete id="delePrivForRole">
+        delete from sys_role_privilege where roleId=#{0} and privalegeId=#{1}
+    </delete>
+
+</mapper>
